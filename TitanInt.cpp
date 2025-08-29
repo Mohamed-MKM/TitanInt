@@ -225,19 +225,29 @@ public:
         // TODO: Implement this operator
         return *this;
     }
-
+    
     // Post-decrement operator (x--)
     BigInt operator--(int)
-    {
-        BigInt temp;
+    {  
         // TODO: Implement this operator
+        BigInt temp(*this);
+        *this -= BigInt(1);
         return temp;
+       
     }
 
     // Convert BigInt to string representation
     string toString() const
     {
         // TODO: Implement this function
+        if (isNegative && number != "0")
+        {
+            return "-" + number;
+        }
+        else if (number != "0")
+        {
+            return number;
+        }
         return "";
     }
 
@@ -245,6 +255,7 @@ public:
     friend ostream &operator<<(ostream &os, const BigInt &num)
     {
         // TODO: Implement this operator
+        os << num.toString();
         return os;
     }
 
@@ -252,6 +263,9 @@ public:
     friend istream &operator>>(istream &is, BigInt &num)
     {
         // TODO: Implement this operator
+        string str;
+        is >> str;
+        num = BigInt(str);
         return is;
     }
 
