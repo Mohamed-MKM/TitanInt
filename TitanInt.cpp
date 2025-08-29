@@ -12,6 +12,17 @@ class BigInt
     void removeLeadingZeros()
     {
         // TODO: Implement this function
+        int i = 0;
+        while (i < number.length() && number[i] == '0')
+        {
+            ++i;
+        }
+        number.erase(0, i);
+        if (number.empty())
+        {
+            number = "0";
+            isNegative = false;
+        }
     }
 
     // Compare absolute values of two BigInts (ignore signs)
@@ -19,7 +30,25 @@ class BigInt
     int compareMagnitude(const BigInt &other) const
     {
         // TODO: Implement this function
-        return 0;
+        if (number.size() > other.number.size())
+        {
+            return 1;
+        }
+        else if (number.size() < other.number.size())
+        {
+            return -1;
+        }
+        else
+        {
+            for (int i = 0; i < number.size(); i++)
+            {
+                if (number[i] > other.number[i])
+                    return 1;
+                else if (number[i] < other.number[i])
+                    return -1;
+            }
+            return 0;
+        }
     }
 
 public:
@@ -27,24 +56,88 @@ public:
     BigInt()
     {
         // TODO: Implement this constructor
+        number = "0";
+        isNegative = false;
     }
 
     // Constructor from 64-bit integer
     BigInt(int64_t value)
     {
         // TODO: Implement this constructor
+        if (value > 0)
+        {
+            isNegative = false;
+            number = to_string(value);
+        }
+        else if (value < 0)
+        {
+            isNegative = true;
+            if (value == INT64_MIN) // cause |MIN| - |MAX| = 1 , so I will cause overflow
+            {
+                number = "9223372036854775808";
+            }
+            else
+            {
+                number = to_string(-value);
+            }
+        }
+        else
+        {
+            isNegative = false;
+            number = "0";
+        }
+
+        removeLeadingZeros();
     }
 
     // Constructor from string representation
     BigInt(const string &str)
     {
         // TODO: Implement this constructor
+        if (str.empty())
+        {
+            cout << "Empty" << endl;
+            number = "0";
+            isNegative = false;
+            return;
+        }
+        string s = str;
+        if (s[0] == '-')
+        {
+            isNegative = true;
+            s.erase(0, 1);
+        }
+        else if (s[0] == '+')
+        {
+            isNegative = false;
+            s.erase(0, 1);
+        }
+        else
+        {
+            isNegative = false;
+        }
+        if (s.empty())
+        {
+            cout << "Invalid input: " << str << endl;
+            number = "0";
+            isNegative = false;
+            return;
+        }
+
+        number = s;
+        removeLeadingZeros();
+        if (number == "0")
+        {
+            isNegative = false;
+        }
     }
 
     // Copy constructor
     BigInt(const BigInt &other)
     {
         // TODO: Implement this constructor
+        number = other.number;
+        isNegative = other.isNegative;
     }
 
     // Destructor
