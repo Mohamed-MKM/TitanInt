@@ -331,7 +331,6 @@ bool operator!=(const BigInt &lhs, const BigInt &rhs)
 bool operator<(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
-
     if (lhs.isNegative && !rhs.isNegative)
     {
         return true;
