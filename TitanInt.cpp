@@ -274,52 +274,145 @@ public:
 };
 
 // Binary addition operator (x + y)
-BigInt operator+(BigInt lhs, const BigInt &rhs)
+
+BigInt operator+(BigInt lhs, const BigInt& rhs)
 {
-    BigInt result;
-    // TODO: Implement this operator
-    return result;
+    if (lhs.isNegative == rhs.isNegative) {
+        string resultStr;
+        int carry = 0;
+        int i = lhs.number.size() - 1;
+        int j = rhs.number.size() - 1;
+
+        while (i >= 0 || j >= 0 || carry) {
+            int digit1 = i >= 0 ? lhs.number[i--] - '0' : 0;
+            int digit2 = j >= 0 ? rhs.number[j--] - '0' : 0;
+            int sum = digit1 + digit2 + carry;
+            carry = sum / 10;
+            resultStr.insert(resultStr.begin(), (sum % 10) + '0');
+        }
+
+        BigInt result;
+        result.number = resultStr;
+        result.isNegative = lhs.isNegative;
+        result.removeLeadingZeros();
+        return result;
+    } else {
+        return lhs - (-rhs);
+    }
 }
 
 // Binary subtraction operator (x - y)
+
 BigInt operator-(BigInt lhs, const BigInt &rhs)
 {
+    if (lhs.isNegative != rhs.isNegative) {
+        return lhs + (-rhs);
+    }
+
+    if (lhs.compareMagnitude(rhs) < 0) {
+        BigInt result = rhs - lhs;
+        result.isNegative = !lhs.isNegative;
+        return result;
+    }
+
+    string resultStr;
+    int borrow = 0;
+    int i = lhs.number.size() - 1;
+    int j = rhs.number.size() - 1;
+
+    while (i >= 0) {
+        int digit1 = lhs.number[i--] - '0';
+        int digit2 = j >= 0 ? rhs.number[j--] - '0' : 0;
+        int diff = digit1 - digit2 - borrow;
+        if (diff < 0) {
+            diff += 10;
+            borrow = 1;
+        } else {
+            borrow = 0;
+        }
+        resultStr.insert(resultStr.begin(), diff + '0');
+    }
+
     BigInt result;
-    // TODO: Implement this operator
+    result.number = resultStr;
+    result.isNegative = lhs.isNegative;
+    result.removeLeadingZeros();
     return result;
 }
 
 // Binary multiplication operator (x * y)
+
 BigInt operator*(BigInt lhs, const BigInt &rhs)
 {
-    BigInt result;
-    // TODO: Implement this operator
-    return result;
+    int n = lhs.number.size(), m = rhs.number.size();
+    vector<int> result(n + m, 0);
+
+    for (int i = n - 1; i >= 0; --i) {
+        for (int j = m - 1; j >= 0; --j) {
+            int mul = (lhs.number[i] - '0') * (rhs.number[j] - '0');
+            int sum = result[i + j + 1] + mul;
+            result[i + j + 1] = sum % 10;
+            result[i + j] += sum / 10;
+        }
+    }
+
+    string resultStr;
+    for (int digit : result) {
+        if (!(resultStr.empty() && digit == 0))
+            resultStr += digit + '0';
+    }
+
+    if (resultStr.empty()) resultStr = "0";
+
+    BigInt finalResult;
+    finalResult.number = resultStr;
+    finalResult.isNegative = lhs.isNegative != rhs.isNegative;
+    return finalResult;
 }
 
 // Binary division operator (x / y)
 BigInt operator/(BigInt lhs, const BigInt &rhs)
 {
-    BigInt result;
-    // TODO: Implement this operator
-    return result;
+    if (rhs.number == "0") throw runtime_error("Division by zero");
+
+    BigInt dividend = lhs;
+    BigInt divisor = rhs;
+    dividend.isNegative = false;
+    divisor.isNegative = false;
+
+    BigInt quotient;
+    BigInt current;
+
+    for (char digit : dividend.number) {
+        current.number += digit;
+        current.removeLeadingZeros();
+
+        int count = 0;
+        while (current.compareMagnitude(divisor) >= 0) {
+            current = current - divisor;
+            ++count;
+        }
+
+        quotient.number += (count + '0');
+    }
+
+    quotient.removeLeadingZeros();
+    quotient.isNegative = lhs.isNegative != rhs.isNegative;
+    return quotient;
 }
 
 // Binary modulus operator (x % y)
 BigInt operator%(BigInt lhs, const BigInt &rhs)
 {
-    BigInt result;
-    // TODO: Implement this operator
-    return result;
+    return lhs - (lhs / rhs) * rhs;
 }
+
 
 // Equality comparison operator (x == y)
 bool operator==(const BigInt &lhs, const BigInt &rhs)
 {
-    // TODO: Implement this operator
-    return false;
+    return lhs.isNegative == rhs.isNegative && lhs.number == rhs.number;
 }
-
 // Inequality comparison operator (x != y)
 bool operator!=(const BigInt &lhs, const BigInt &rhs)
 {
