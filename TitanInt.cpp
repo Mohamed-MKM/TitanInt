@@ -225,15 +225,14 @@ public:
         // TODO: Implement this operator
         return *this;
     }
-    
+
     // Post-decrement operator (x--)
     BigInt operator--(int)
-    {  
+    {
         // TODO: Implement this operator
         BigInt temp(*this);
         *this -= BigInt(1);
         return temp;
-       
     }
 
     // Convert BigInt to string representation
@@ -325,13 +324,34 @@ bool operator==(const BigInt &lhs, const BigInt &rhs)
 bool operator!=(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
-    return false;
+    return !(lhs == rhs);
 }
 
 // Less-than comparison operator (x < y)
 bool operator<(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
+    if (lhs.isNegative && !rhs.isNegative)
+    {
+        return true;
+    }
+    if (!lhs.isNegative && rhs.isNegative)
+    {
+        return false;
+    }
+
+    int magnitudeComparison = lhs.compareMagnitude(rhs);
+
+    if (!lhs.isNegative)
+    {
+
+        return magnitudeComparison < 0;
+    }
+    else
+    {
+        return magnitudeComparison > 0;
+    }
+
     return false;
 }
 
@@ -339,21 +359,21 @@ bool operator<(const BigInt &lhs, const BigInt &rhs)
 bool operator<=(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
-    return false;
+    return (lhs < rhs) || (lhs == rhs);
 }
 
 // Greater-than comparison operator (x > y)
 bool operator>(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
-    return false;
+    return !(lhs <= rhs);
 }
 
 // Greater-than-or-equal comparison operator (x >= y)
 bool operator>=(const BigInt &lhs, const BigInt &rhs)
 {
     // TODO: Implement this operator
-    return false;
+    return (lhs > rhs) || (lhs == rhs);
 }
 
 int main()
