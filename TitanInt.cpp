@@ -143,36 +143,48 @@ public:
     // Destructor
     ~BigInt()
     {
-        // TODO: Implement if needed
+        // TODO: Implement if needed 
+        //no destructor nedeed
     }
 
     // Assignment operator
     BigInt &operator=(const BigInt &other)
     {
         // TODO: Implement this operator
+        if (this != &other) {
+            number = other.number;
+            isNegative = other.isNegative;
+        }
         return *this;
     }
 
     // Unary negation operator (-x)
     BigInt operator-() const
     {
-        BigInt result;
         // TODO: Implement negation logic
+        BigInt result(*this);
+        if (result.number != "0") {
+            result.isNegative = !isNegative;
+        }
+        else {
+            result.isNegative = false;
+        }
         return result;
     }
 
     // Unary plus operator (+x)
     BigInt operator+() const
     {
-        BigInt result;
         // TODO: Implement this operator
-        return result;
+        return *this; //return the copy
     }
 
     // Addition assignment operator (x += y)
     BigInt &operator+=(const BigInt &other)
     {
         // TODO: Implement this operator
+        BigInt temp= *this;
+        *this = temp + other;
         return *this;
     }
 
@@ -180,6 +192,8 @@ public:
     BigInt &operator-=(const BigInt &other)
     {
         // TODO: Implement this operator
+        BigInt temp = *this;
+        *this = temp - other;
         return *this;
     }
 
