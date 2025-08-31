@@ -204,6 +204,35 @@ public:
     BigInt& operator*=(const BigInt& other)
     {
         // TODO: Implement this operator
+        int n = number.length(), m = other.number.length();
+        if (n == 0 || m == 0) {
+            number = "0";
+            isNegative = false;
+            return *this;
+        }
+        
+        vector<int> result(n + m, 0);
+        
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = m - 1; j >= 0; j--) {
+                int mul = (number[i] - '0') * (other.number[j] - '0');
+                int sum = result[i + j + 1] + mul;
+                
+                result[i + j + 1] = sum % 10;
+                result[i + j] += sum / 10;
+            }
+        }
+        
+        string str = "";
+        for (int num : result) {
+            if (!(str.empty() && num == 0)) {
+                str += to_string(num);
+            }
+        }
+        
+        number = str.empty() ? "0" : str;
+        isNegative = (isNegative != other.isNegative) && (number != "0");
+        removeLeadingZeros();
         return *this;
     }
 
