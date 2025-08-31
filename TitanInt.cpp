@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdint>
+
 using namespace std;
 
 class BigInt
@@ -8,6 +9,10 @@ class BigInt
     string number;   // Stores the number as a string
     bool isNegative; // True if number is negative
 
+
+
+public:
+    // Moved function (removeLeadingZeros,compareMagnitude) to public for declaration and external access
     // Remove unnecessary leading zeros from the number string
     void removeLeadingZeros()
     {
@@ -27,7 +32,7 @@ class BigInt
 
     // Compare absolute values of two BigInts (ignore signs)
     // Returns: 1 if |this| > |other|, 0 if equal, -1 if |this| < |other|
-    int compareMagnitude(const BigInt &other) const
+    int compareMagnitude(const BigInt& other) const
     {
         // TODO: Implement this function
         if (number.size() > other.number.size())
@@ -50,8 +55,6 @@ class BigInt
             return 0;
         }
     }
-
-public:
     // Default constructor - initialize to zero
     BigInt()
     {
@@ -91,7 +94,7 @@ public:
     }
 
     // Constructor from string representation
-    BigInt(const string &str)
+    BigInt(const string& str)
     {
         // TODO: Implement this constructor
         if (str.empty())
@@ -133,7 +136,7 @@ public:
     }
 
     // Copy constructor
-    BigInt(const BigInt &other)
+    BigInt(const BigInt& other)
     {
         // TODO: Implement this constructor
         number = other.number;
@@ -148,7 +151,7 @@ public:
     }
 
     // Assignment operator
-    BigInt &operator=(const BigInt &other)
+    BigInt& operator=(const BigInt& other)
     {
         // TODO: Implement this operator
         if (this != &other) {
@@ -180,16 +183,16 @@ public:
     }
 
     // Addition assignment operator (x += y)
-    BigInt &operator+=(const BigInt &other)
+    BigInt& operator+=(const BigInt& other)
     {
         // TODO: Implement this operator
-        BigInt temp= *this;
+        BigInt temp = *this;
         *this = temp + other;
         return *this;
     }
 
     // Subtraction assignment operator (x -= y)
-    BigInt &operator-=(const BigInt &other)
+    BigInt& operator-=(const BigInt& other)
     {
         // TODO: Implement this operator
         BigInt temp = *this;
@@ -198,28 +201,28 @@ public:
     }
 
     // Multiplication assignment operator (x *= y)
-    BigInt &operator*=(const BigInt &other)
+    BigInt& operator*=(const BigInt& other)
     {
         // TODO: Implement this operator
         return *this;
     }
 
     // Division assignment operator (x /= y)
-    BigInt &operator/=(const BigInt &other)
+    BigInt& operator/=(const BigInt& other)
     {
         // TODO: Implement this operator
         return *this;
     }
 
     // Modulus assignment operator (x %= y)
-    BigInt &operator%=(const BigInt &other)
+    BigInt& operator%=(const BigInt& other)
     {
         // TODO: Implement this operator
         return *this;
     }
 
     // Pre-increment operator (++x)
-    BigInt &operator++()
+    BigInt& operator++()
     {
         // TODO: Implement this operator
         return *this;
@@ -228,13 +231,14 @@ public:
     // Post-increment operator (x++)
     BigInt operator++(int)
     {
-        BigInt temp;
+        BigInt temp = *this;
         // TODO: Implement this operator
+        *this += BigInt(1);
         return temp;
     }
 
     // Pre-decrement operator (--x)
-    BigInt &operator--()
+    BigInt& operator--()
     {
         // TODO: Implement this operator
         return *this;
@@ -253,19 +257,15 @@ public:
     string toString() const
     {
         // TODO: Implement this function
-        if (isNegative && number != "0")
-        {
-            return "-" + number;
+        if (isNegative && number != "0") {
+            return "-" + number;// return the number with the sign if negative
         }
-        else if (number != "0")
-        {
-            return number;
-        }
-        return "";
+
+        return number; // return the number if zero or positive 
     }
 
     // Output stream operator (for printing)
-    friend ostream &operator<<(ostream &os, const BigInt &num)
+    friend ostream& operator<<(ostream& os, const BigInt& num)
     {
         // TODO: Implement this operator
         os << num.toString();
@@ -273,7 +273,7 @@ public:
     }
 
     // Input stream operator (for reading from input)
-    friend istream &operator>>(istream &is, BigInt &num)
+    friend istream& operator>>(istream& is, BigInt& num)
     {
         // TODO: Implement this operator
         string str;
@@ -283,173 +283,221 @@ public:
     }
 
     // Friend declarations for comparison operators
-    friend bool operator==(const BigInt &lhs, const BigInt &rhs);
-    friend bool operator<(const BigInt &lhs, const BigInt &rhs);
+    friend bool operator==(const BigInt& lhs, const BigInt& rhs);
+    friend bool operator<(const BigInt& lhs, const BigInt& rhs);
+
+    // using getters for decleraition number and isNegative in binary opertators
+    string getNumber() const {
+        return number;
+    }
+    bool getIsNegative()const {
+        return isNegative;
+    }
+    void setNumber(const string& num) {
+        number = num;
+    }
+    void setIsNegative(bool neg) {
+        isNegative = neg;
+    }
 };
 
 // Binary addition operator (x + y)
 
 BigInt operator+(BigInt lhs, const BigInt& rhs)
 {
-    if (lhs.isNegative == rhs.isNegative) {
+    if (lhs.getIsNegative() == rhs.getIsNegative()) {
         string resultStr;
         int carry = 0;
-        int i = lhs.number.size() - 1;
-        int j = rhs.number.size() - 1;
+        int i = lhs.getNumber().size() - 1;
+        int j = rhs.getNumber().size() - 1;
 
         while (i >= 0 || j >= 0 || carry) {
-            int digit1 = i >= 0 ? lhs.number[i--] - '0' : 0;
-            int digit2 = j >= 0 ? rhs.number[j--] - '0' : 0;
+            int digit1 = i >= 0 ? lhs.getNumber()[i--] - '0' : 0;
+            int digit2 = j >= 0 ? rhs.getNumber()[j--] - '0' : 0;
             int sum = digit1 + digit2 + carry;
             carry = sum / 10;
-            resultStr.insert(resultStr.begin(), (sum % 10) + '0');
+            resultStr.push_back((sum % 10) + '0'); // apply push_back for efficiency and faster O(n)
         }
+        //reverse the result 
+        reverse(resultStr.begin(), resultStr.end());
 
         BigInt result;
-        result.number = resultStr;
-        result.isNegative = lhs.isNegative;
+        result.setNumber(resultStr);
+        result.setIsNegative(lhs.getIsNegative());
         result.removeLeadingZeros();
         return result;
-    } else {
+    }
+    else {
         return lhs - (-rhs);
     }
 }
 
 // Binary subtraction operator (x - y)
 
-BigInt operator-(BigInt lhs, const BigInt &rhs)
+BigInt operator-(BigInt lhs, const BigInt& rhs)
 {
-    if (lhs.isNegative != rhs.isNegative) {
+    if (lhs.getIsNegative() != rhs.getIsNegative()) {
         return lhs + (-rhs);
     }
 
     if (lhs.compareMagnitude(rhs) < 0) {
         BigInt result = rhs - lhs;
-        result.isNegative = !lhs.isNegative;
+        result.setIsNegative(!lhs.getIsNegative());
         return result;
     }
 
     string resultStr;
     int borrow = 0;
-    int i = lhs.number.size() - 1;
-    int j = rhs.number.size() - 1;
+    int i = lhs.getNumber().size() - 1;
+    int j = rhs.getNumber().size() - 1;
 
     while (i >= 0) {
-        int digit1 = lhs.number[i--] - '0';
-        int digit2 = j >= 0 ? rhs.number[j--] - '0' : 0;
+        int digit1 = lhs.getNumber()[i--] - '0';
+        int digit2 = j >= 0 ? rhs.getNumber()[j--] - '0' : 0;
         int diff = digit1 - digit2 - borrow;
         if (diff < 0) {
             diff += 10;
             borrow = 1;
-        } else {
+        }
+        else {
             borrow = 0;
         }
-        resultStr.insert(resultStr.begin(), diff + '0');
+        //resultStr.insert(resultStr.begin(), diff + '0'); chang to push_back for efficienty
+        resultStr.push_back(diff + '0');
     }
-
+    reverse(resultStr.begin(), resultStr.end());
     BigInt result;
-    result.number = resultStr;
-    result.isNegative = lhs.isNegative;
+    result.setNumber(resultStr);
+    result.setIsNegative(lhs.getIsNegative());
     result.removeLeadingZeros();
     return result;
 }
 
 // Binary multiplication operator (x * y)
 
-BigInt operator*(BigInt lhs, const BigInt &rhs)
+BigInt operator*(BigInt lhs, const BigInt& rhs)
 {
-    int n = lhs.number.size(), m = rhs.number.size();
-    vector<int> result(n + m, 0);
+    // to handel multi by zero 
+    if (lhs.getNumber() == "0" || rhs.getNumber() == "0") {
+        return BigInt(0);
+    }
+    int n = lhs.getNumber().size(), m = rhs.getNumber().size();
+    //vector<int> result(n + m, 0); if not using vector library
+    int* result = new int[n + m]();
 
     for (int i = n - 1; i >= 0; --i) {
         for (int j = m - 1; j >= 0; --j) {
-            int mul = (lhs.number[i] - '0') * (rhs.number[j] - '0');
+            int mul = (lhs.getNumber()[i] - '0') * (rhs.getNumber()[j] - '0');
             int sum = result[i + j + 1] + mul;
             result[i + j + 1] = sum % 10;
             result[i + j] += sum / 10;
         }
     }
 
-    string resultStr;
-    for (int digit : result) {
-        if (!(resultStr.empty() && digit == 0))
-            resultStr += digit + '0';
+    string resultStr; //store the result from array to string 
+    bool leadingZero = true;
+    for (int i = 0; i < n + m; ++i) {
+        if (leadingZero && result[i] == 0) {
+            continue;
+         
+        }
+        leadingZero = false;
+        result.push_back(result[i] + '0')
     }
 
     if (resultStr.empty()) resultStr = "0";
-
+    delete[] result; // for avoiding memory leak
     BigInt finalResult;
-    finalResult.number = resultStr;
-    finalResult.isNegative = lhs.isNegative != rhs.isNegative;
+    finalResult.setNumber(resultStr);
+    finalResult.setIsNegative(lhs.getIsNegative() != rhs.getIsNegative());
     return finalResult;
 }
 
 // Binary division operator (x / y)
-BigInt operator/(BigInt lhs, const BigInt &rhs)
+BigInt operator/(BigInt lhs, const BigInt& rhs)
 {
-    if (rhs.number == "0") throw runtime_error("Division by zero");
-
+    if (rhs.getNumber() == "0") {
+        throw runtime_error("Division by zero");
+    }
+    if (lhs.getNumber() == "0") {
+        return BigInt(0);
+    }
     BigInt dividend = lhs;
     BigInt divisor = rhs;
-    dividend.isNegative = false;
-    divisor.isNegative = false;
+    dividend.setIsNegative(false);
+    divisor.setIsNegative(false);
 
-    BigInt quotient;
+    string quotientStr;
     BigInt current;
-
-    for (char digit : dividend.number) {
-        current.number += digit;
-        current.removeLeadingZeros();
-
+    for (char digit : dividend.getNumber()) {
+        string temp = current.getNumber();
+        temp.push_back(digit);
+        current.setNumber(temp);
         int count = 0;
         while (current.compareMagnitude(divisor) >= 0) {
             current = current - divisor;
             ++count;
         }
 
-        quotient.number += (count + '0');
+        quotientStr.push_back(count + '0');
     }
 
-    quotient.removeLeadingZeros();
-    quotient.isNegative = lhs.isNegative != rhs.isNegative;
+    /**quotientStr.removeLeadingZeros();
+    quotientStr.getIsNegative () = lhs.getIsNegative() != rhs.getIsNegative();
+    */
+    BigInt quotient(quotientStr);
+    BigInt.removeLeadingZeros();
+    quotient.setIsNegative(lhs.getIsNegative() != rhs.getIsNegative());
     return quotient;
 }
 
 // Binary modulus operator (x % y)
-BigInt operator%(BigInt lhs, const BigInt &rhs)
+BigInt operator%(BigInt lhs, const BigInt& rhs)
 {
-    return lhs - (lhs / rhs) * rhs;
+    //return lhs - (lhs / rhs) * rhs; change it for correctness mathimatical modulus formula
+    if (rhs.getNumber() == "0") {
+        throw runtime_error("modulus by zero");
+    }
+    BigInt result = lhs - (lhs / rhs) * rhs;
+    if (result.getNumber() == "0") {
+        result.setIsNegative(false);
+    }
+    else {
+        result.setIsNegative(lhs.getIsNegative());
+
+    }
+    return result;
 }
 
 
 // Equality comparison operator (x == y)
-bool operator==(const BigInt &lhs, const BigInt &rhs)
+bool operator==(const BigInt& lhs, const BigInt& rhs)
 {
-    return lhs.isNegative == rhs.isNegative && lhs.number == rhs.number;
+    return lhs.getIsNegative() == rhs.getIsNegative() && lhs.getNumber() == rhs.getNumber();
 }
 // Inequality comparison operator (x != y)
-bool operator!=(const BigInt &lhs, const BigInt &rhs)
+bool operator!=(const BigInt& lhs, const BigInt& rhs)
 {
     // TODO: Implement this operator
     return !(lhs == rhs);
 }
 
 // Less-than comparison operator (x < y)
-bool operator<(const BigInt &lhs, const BigInt &rhs)
+bool operator<(const BigInt& lhs, const BigInt& rhs)
 {
     // TODO: Implement this operator
-    if (lhs.isNegative && !rhs.isNegative)
+    if (lhs.getIsNegative() && !rhs.getIsNegative())
     {
         return true;
     }
-    if (!lhs.isNegative && rhs.isNegative)
+    if (!lhs.getIsNegative() && rhs.getIsNegative())
     {
         return false;
     }
 
     int magnitudeComparison = lhs.compareMagnitude(rhs);
 
-    if (!lhs.isNegative)
+    if (!lhs.getIsNegative())
     {
 
         return magnitudeComparison < 0;
@@ -463,21 +511,21 @@ bool operator<(const BigInt &lhs, const BigInt &rhs)
 }
 
 // Less-than-or-equal comparison operator (x <= y)
-bool operator<=(const BigInt &lhs, const BigInt &rhs)
+bool operator<=(const BigInt& lhs, const BigInt& rhs)
 {
     // TODO: Implement this operator
     return (lhs < rhs) || (lhs == rhs);
 }
 
 // Greater-than comparison operator (x > y)
-bool operator>(const BigInt &lhs, const BigInt &rhs)
+bool operator>(const BigInt& lhs, const BigInt& rhs)
 {
     // TODO: Implement this operator
     return !(lhs <= rhs);
 }
 
 // Greater-than-or-equal comparison operator (x >= y)
-bool operator>=(const BigInt &lhs, const BigInt &rhs)
+bool operator>=(const BigInt& lhs, const BigInt& rhs)
 {
     // TODO: Implement this operator
     return (lhs > rhs) || (lhs == rhs);
@@ -486,11 +534,11 @@ bool operator>=(const BigInt &lhs, const BigInt &rhs)
 int main()
 {
     cout << "=== BigInt Class Test Program ===" << endl
-         << endl;
+        << endl;
     cout << "NOTE: All functions are currently empty." << endl;
     cout << "Your task is to implement ALL the functions above." << endl;
     cout << "The tests below will work once you implement them correctly." << endl
-         << endl;
+        << endl;
 
     /*
     // Test 1: Constructors and basic output
