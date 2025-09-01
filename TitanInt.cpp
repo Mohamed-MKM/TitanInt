@@ -273,6 +273,7 @@ public:
     BigInt &operator--()
     {
         // TODO: Implement this operator
+        *this -= BigInt(1);
         return *this;
     }
     ///////////////////////////////////////////////////////////////
@@ -581,7 +582,7 @@ int main()
     cout << "The tests below will work once you implement them correctly." << endl
          << endl;
 
-    /*
+    
 // Test 1: Constructors and basic output
 cout << "1. Constructors and output:" << endl;
 BigInt a(12345);              // Should create BigInt from integer
@@ -637,7 +638,7 @@ cout << "Multiplication by zero: " << one * zero << endl;        // Should be "0
 cout << "Negative multiplication: " << BigInt(-5) * BigInt(3) << endl;  // Should be "-15"
 cout << "Negative division: " << BigInt(-10) / BigInt(3) << endl;       // Should be "-3"
 cout << "Negative modulus: " << BigInt(-10) % BigInt(3) << endl;        // Should be "-1"
-*/
+
 
     return 0;
 }
