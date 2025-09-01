@@ -253,6 +253,8 @@ public:
     BigInt &operator++()
     {
         // TODO: Implement this operator
+
+        *this += BigInt(1);
         return *this;
     }
 
