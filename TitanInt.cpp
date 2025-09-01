@@ -248,17 +248,12 @@ public:
         return *this;
     }
 
-    ///////////****** Needs Implementing ******* *//////////////////////
     // Pre-increment operator (++x)
     BigInt &operator++()
     {
-        // TODO: Implement this operator
-
         *this += BigInt(1);
         return *this;
     }
-
-    ////////////////////////////////////////////////////////////////
 
     // Post-increment operator (x++)
     BigInt operator++(int)
