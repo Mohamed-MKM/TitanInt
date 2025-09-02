@@ -934,6 +934,49 @@ int main()
     {
         cout << "ERROR: Negative zero failed: " << e.what() << endl;
     }
+ // test additional casses with negative nubers
+    cout << "1.Addition with negative numbers : " << endl;
+    cout << :"-5 + -10 =" << (BigInt(-5) + BigInt(-10)) <<"expected: -15"<< endl;
+    // test additional cases with negative numbers
+    cout << "----------------------\n";
+    cout << "1. Addition with negative numbers :" << endl;
+    cout << "-5 + -10 = " << (BigInt(-5) + BigInt(-10)) << " expected: -15" << endl;
+    cout << "-5 + 10 = " << (BigInt(-5) + BigInt(10)) << " expected: 5" << endl;
+    cout << "5 + -10 = " << (BigInt(5) + BigInt(-10)) << " expected: -5" << endl;
+    //test subtraction with negative
+    cout << "----------------------\n";
+    cout << "2.subtraction with negative :" << endl;
+    cout << "5 - (-10) = " << (BigInt(5) - BigInt(-10)) << " expected: 15" << endl;
+    cout << "-5 - (-10) = " << (BigInt(-5) - BigInt(-10)) << " expected: 5" << endl;
+    cout << "-5 - 10 = " << (BigInt(-5) - BigInt(10)) << " expected: -15" << endl;
+    cout << "5 - 10 = " << (BigInt(5) - BigInt(10)) << " expected: -5" << endl;
+    //test multiplication with negative
+    cout << "----------------------\n";
+    cout << "3.multiplication with negative" << endl;
+    cout << "-5 * 10 = " << (BigInt(-5) * BigInt(10)) << " expected: -50" << endl;
+    cout << "-5 * -10 = " << (BigInt(-5) * BigInt(-10)) << " expected: 50" << endl;
+    cout << "5 * -10 = " << (BigInt(5) * BigInt(-10)) << " expected: -50" << endl;
+    //test division with negative
+    cout << "----------------------\n";
+    cout << "4.division with negative :" << endl;
+    cout << "-10/2 = " << (BigInt(-10) / BigInt(2)) << " expected: -5" << endl;
+    cout << "-10/-2 = " << (BigInt(-10) / BigInt(-2)) << " expected: 5" << endl;
+    cout << "10/-2 = " << (BigInt(10) / BigInt(-2)) << " expected: -5" << endl;
+    //Modulus with negative
+    cout << "----------------------\n";
+    cout << " 5. Modulus with negative :" << endl;
+    cout << "10 % (-3) = " << (BigInt(10) % BigInt(-3)) << " expected: 1" << endl;
+    cout << "(-10) % (-3) = " << (BigInt(-10) % BigInt(-3)) << " expected: -1" << endl;
+    cout << "(-10) % 3 = " << (BigInt(-10) % BigInt(3)) << " expected: -1" << endl;
+    // INT64MIN edge cases with negative
+    cout << "----------------------\n";
+    cout << "6. INT64MIN edge cases:\n";
+    BigInt minint64(INT64_MIN);
+    cout << "INT64MIN = " << min_int64 << " (expected: -9223372036854775808)\n";
+    cout << "INT64MIN + 1 = " << (min_int64 + BigInt(1))
+        << " (expected: -9223372036854775807)\n";
+    cout << "INT64MIN - 1 = " << (min_int64 - BigInt(1))
+        << " (expected: -9223372036854775809)\n";
 
     // Test edge case: Division by zero
     try
