@@ -935,5 +935,30 @@ int main()
         cout << "ERROR: Negative zero failed: " << e.what() << endl;
     }
 
+    // Test edge case: Division by zero
+    try
+    {
+        BigInt a("123456789");
+        BigInt b("0");
+        BigInt c = a / b;
+        cout << "Result: " << c << endl;
+    }
+    catch (const std::runtime_error &e)
+    {
+        cout << "Caught exception: " << e.what() << endl;
+    }
+
+    try
+    {
+        BigInt x("-987654321");
+        BigInt y("0");
+        BigInt z = x % y;
+        cout << "Result: " << z << endl;
+    }
+    catch (const std::runtime_error &e)
+    {
+        cout << "Caught exception: " << e.what() << endl;
+    }
+
     return 0;
 }
