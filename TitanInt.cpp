@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
+#include <limits>
 
 using namespace std;
 
@@ -585,423 +586,551 @@ bool operator>=(const BigInt &lhs, const BigInt &rhs)
     return (lhs > rhs) || (lhs == rhs);
 }
 
-int main()
+// ==================== TEST FUNCTIONS ====================
+
+void runBasicTests()
 {
-    cout << "=== BigInt Class Test Program ===" << endl
-         << endl;
-    cout << "NOTE: All functions are currently empty." << endl;
-    cout << "Your task is to implement ALL the functions above." << endl;
-    cout << "The tests below will work once you implement them correctly." << endl
-         << endl;
+    cout << "\n=== BASIC CONSTRUCTOR AND OUTPUT TESTS ===" << endl;
 
-    // Test 1: Constructors and basic output
-    cout << "1. Constructors and output:" << endl;
-    BigInt a(12345);                          // Should create BigInt from integer
-    BigInt b("-67890");                       // Should create BigInt from string
-    BigInt c("0");                            // Should handle zero correctly
-    BigInt d = a;                             // Should use copy constructor
-    cout << "a (from int): " << a << endl;    // Should print "12345"
-    cout << "b (from string): " << b << endl; // Should print "-67890"
-    cout << "c (zero): " << c << endl;        // Should print "0"
-    cout << "d (copy of a): " << d << endl
-         << endl; // Should print "12345"
+    BigInt a(12345);
+    BigInt b("-67890");
+    BigInt c("0");
+    BigInt d = a;
 
-    // Test 2: Arithmetic operations
-    cout << "2. Arithmetic operations:" << endl;
-    cout << "a + b = " << a + b << endl; // Should calculate 12345 + (-67890)
-    cout << "a - b = " << a - b << endl; // Should calculate 12345 - (-67890)
-    cout << "a * b = " << a * b << endl; // Should calculate 12345 * (-67890)
-    cout << "b / a = " << b / a << endl; // Should calculate (-67890) / 12345
-    cout << "a % 100 = " << a % BigInt(100) << endl
-         << endl; // Should calculate 12345 % 100
+    cout << "a (from int): " << a << endl;
+    cout << "b (from string): " << b << endl;
+    cout << "c (zero): " << c << endl;
+    cout << "d (copy of a): " << d << endl;
+}
 
-    // Test 3: Relational operators
-    cout << "3. Relational operators:" << endl;
-    cout << "a == d: " << (a == d) << endl; // Should be true (12345 == 12345)
-    cout << "a != b: " << (a != b) << endl; // Should be true (12345 != -67890)
-    cout << "a < b: " << (a < b) << endl;   // Should be false (12345 < -67890)
-    cout << "a > b: " << (a > b) << endl;   // Should be true (12345 > -67890)
-    cout << "c == 0: " << (c == BigInt(0)) << endl
-         << endl; // Should be true (0 == 0)
+void runArithmeticTests()
+{
+    cout << "\n=== ARITHMETIC OPERATIONS TESTS ===" << endl;
 
-    // Test 4: Unary operators and increments
-    cout << "4. Unary operators and increments:" << endl;
-    cout << "-a: " << -a << endl;   // Should print "-12345"
-    cout << "++a: " << ++a << endl; // Should increment and print "12346"
-    cout << "a--: " << a-- << endl; // Should print "12346" then decrement
-    cout << "a after decrement: " << a << endl
-         << endl; // Should print "12345"
+    BigInt a(12345);
+    BigInt b("-67890");
 
-    // Test 5: Large number operations
-    cout << "5. Large number operations:" << endl;
+    cout << "a = " << a << ", b = " << b << endl;
+    cout << "a + b = " << a + b << endl;
+    cout << "a - b = " << a - b << endl;
+    cout << "a * b = " << a * b << endl;
+    cout << "b / a = " << b / a << endl;
+    cout << "a % 100 = " << a % BigInt(100) << endl;
+
+    cout << "\nLarge number operations:" << endl;
     BigInt num1("12345678901234567890");
     BigInt num2("98765432109876543210");
-    cout << "Very large addition: " << num1 + num2 << endl;
-    cout << "Very large multiplication: " << num1 * num2 << endl
-         << endl;
+    cout << "Large addition: " << num1 + num2 << endl;
+    cout << "Large multiplication: " << num1 * num2 << endl;
+}
 
-    // Test 6: Edge cases and error handling
-    cout << "6. Edge cases:" << endl;
+void runComparisonTests()
+{
+    cout << "\n=== COMPARISON OPERATORS TESTS ===" << endl;
+
+    BigInt a(12345);
+    BigInt b("-67890");
+    BigInt c(12345);
     BigInt zero(0);
-    BigInt one(1);
+
+    cout << "a = " << a << ", b = " << b << ", c = " << c << ", zero = " << zero << endl;
+    cout << "a == c: " << (a == c) << " (expected: 1)" << endl;
+    cout << "a != b: " << (a != b) << " (expected: 1)" << endl;
+    cout << "a < b: " << (a < b) << " (expected: 0)" << endl;
+    cout << "a > b: " << (a > b) << " (expected: 1)" << endl;
+    cout << "a <= c: " << (a <= c) << " (expected: 1)" << endl;
+    cout << "a >= c: " << (a >= c) << " (expected: 1)" << endl;
+    cout << "zero == 0: " << (zero == BigInt(0)) << " (expected: 1)" << endl;
+}
+
+void runUnaryAndIncrementTests()
+{
+    cout << "\n=== UNARY OPERATORS AND INCREMENT/DECREMENT TESTS ===" << endl;
+
+    BigInt a(12345);
+    cout << "Original a: " << a << endl;
+    cout << "-a: " << -a << endl;
+    cout << "+a: " << +a << endl;
+
+    cout << "\nIncrement/Decrement tests:" << endl;
+    cout << "++a: " << ++a << " (a is now " << a << ")" << endl;
+
+    a = BigInt(12345);
+    cout << "a++: " << a++ << " (a is now " << a << ")" << endl;
+
+    a = BigInt(12345);
+    cout << "--a: " << --a << " (a is now " << a << ")" << endl;
+
+    a = BigInt(12345);
+    cout << "a--: " << a-- << " (a is now " << a << ")" << endl;
+}
+
+void runNegativeNumberTests()
+{
+    cout << "\n=== NEGATIVE NUMBER OPERATIONS TESTS ===" << endl;
+
+    cout << "Addition with negatives:" << endl;
+    cout << "-5 + -10 = " << (BigInt(-5) + BigInt(-10)) << " (expected: -15)" << endl;
+    cout << "-5 + 10 = " << (BigInt(-5) + BigInt(10)) << " (expected: 5)" << endl;
+    cout << "5 + -10 = " << (BigInt(5) + BigInt(-10)) << " (expected: -5)" << endl;
+
+    cout << "\nSubtraction with negatives:" << endl;
+    cout << "5 - (-10) = " << (BigInt(5) - BigInt(-10)) << " (expected: 15)" << endl;
+    cout << "-5 - (-10) = " << (BigInt(-5) - BigInt(-10)) << " (expected: 5)" << endl;
+    cout << "-5 - 10 = " << (BigInt(-5) - BigInt(10)) << " (expected: -15)" << endl;
+
+    cout << "\nMultiplication with negatives:" << endl;
+    cout << "-5 * 10 = " << (BigInt(-5) * BigInt(10)) << " (expected: -50)" << endl;
+    cout << "-5 * -10 = " << (BigInt(-5) * BigInt(-10)) << " (expected: 50)" << endl;
+    cout << "5 * -10 = " << (BigInt(5) * BigInt(-10)) << " (expected: -50)" << endl;
+
+    cout << "\nDivision with negatives:" << endl;
+    cout << "-10 / 2 = " << (BigInt(-10) / BigInt(2)) << " (expected: -5)" << endl;
+    cout << "-10 / -2 = " << (BigInt(-10) / BigInt(-2)) << " (expected: 5)" << endl;
+    cout << "10 / -2 = " << (BigInt(10) / BigInt(-2)) << " (expected: -5)" << endl;
+
+    cout << "\nModulus with negatives:" << endl;
+    cout << "10 % (-3) = " << (BigInt(10) % BigInt(-3)) << " (expected: 1)" << endl;
+    cout << "(-10) % (-3) = " << (BigInt(-10) % BigInt(-3)) << " (expected: -1)" << endl;
+    cout << "(-10) % 3 = " << (BigInt(-10) % BigInt(3)) << " (expected: -1)" << endl;
+}
+
+void runEdgeCaseTests()
+{
+    cout << "\n=== EDGE CASE TESTS ===" << endl;
+
+    cout << "Zero operations:" << endl;
+    cout << "0 + 0 = " << (BigInt(0) + BigInt(0)) << endl;
+    cout << "0 - 5 = " << (BigInt(0) - BigInt(5)) << endl;
+    cout << "0 * 12345 = " << (BigInt(0) * BigInt(12345)) << endl;
+    cout << "0 / 7 = " << (BigInt(0) / BigInt(7)) << endl;
+
+    cout << "\nCarry-over tests:" << endl;
+    cout << "999 + 1 = " << (BigInt("999") + BigInt("1")) << endl;
+    cout << "1000 - 1 = " << (BigInt("1000") - BigInt("1")) << endl;
+
+    cout << "\nINT64_MIN edge cases:" << endl;
+    BigInt min_int64(INT64_MIN);
+    cout << "INT64_MIN = " << min_int64 << endl;
+    cout << "INT64_MIN + 1 = " << (min_int64 + BigInt(1)) << endl;
+    cout << "INT64_MIN - 1 = " << (min_int64 - BigInt(1)) << endl;
+
+    cout << "\nDivision by zero tests:" << endl;
     try
     {
-        BigInt result = one / zero; // Should throw division by zero error
-        cout << "Division by zero succeeded (unexpected)" << endl;
+        BigInt result = BigInt(1) / BigInt(0);
+        cout << "ERROR: Division by zero should have thrown exception" << endl;
     }
     catch (const runtime_error &e)
     {
-        cout << "Division by zero correctly threw error: " << e.what() << endl;
+        cout << "Division by zero correctly caught: " << e.what() << endl;
     }
-    cout << "Multiplication by zero: " << one * zero << endl;              // Should be "0"
-    cout << "Negative multiplication: " << BigInt(-5) * BigInt(3) << endl; // Should be "-15"
-    cout << "Negative division: " << BigInt(-10) / BigInt(3) << endl;      // Should be "-3"
-    cout << "Negative modulus: " << BigInt(-10) % BigInt(3) << endl;       // Should be "-1"
 
-    //////////////Extra AI Generated Test Cases
-    cout << "=== EXTRA TEST CASES ===" << endl;
-
-    // 1. Zero edge cases
-    cout << "0 + 0 = " << (BigInt(0) + BigInt(0)) << endl;         // 0
-    cout << "0 - 5 = " << (BigInt(0) - BigInt(5)) << endl;         // -5
-    cout << "0 * 12345 = " << (BigInt(0) * BigInt(12345)) << endl; // 0
-    cout << "0 / 7 = " << (BigInt(0) / BigInt(7)) << endl;         // 0
-
-    // 2. Carry-over addition
-    cout << "999 + 1 = " << (BigInt("999") + BigInt("1")) << endl; // 1000
-
-    // 3. Subtraction leading to negative
-    cout << "5 - 10 = " << (BigInt(5) - BigInt(10)) << endl; // -5
-
-    // 4. Division tests
-    cout << "100 / 3 = " << (BigInt("100") / BigInt("3")) << endl; // 33
-    cout << "100 % 3 = " << (BigInt("100") % BigInt("3")) << endl; // 1
-
-    // 5. Negative divisions
-    cout << "-10 / 3 = " << (BigInt(-10) / BigInt(3)) << endl; // -3
-    cout << "-10 % 3 = " << (BigInt(-10) % BigInt(3)) << endl; // -1
-    cout << "10 / -3 = " << (BigInt(10) / BigInt(-3)) << endl; // -3
-    cout << "10 % -3 = " << (BigInt(10) % BigInt(-3)) << endl; // 1
-
-    // 6. Very large number tests
-    BigInt large1("999999999999999999999999999");
-    BigInt large2("1");
-    cout << "Large + 1 = " << (large1 + large2) << endl;    // 1000000000000000000000000000
-    cout << "Large * 2 = " << (large1 * BigInt(2)) << endl; // 1999999999999999999999999998
-
-    // 7. Equality and comparison
-    cout << "(123 == 123): " << (BigInt(123) == BigInt(123)) << endl; // true
-    cout << "(123 < 456): " << (BigInt(123) < BigInt(456)) << endl;   // true
-    cout << "(456 > 123): " << (BigInt(456) > BigInt(123)) << endl;   // true
-
-    cout << "\n=== Comprehensive Tests ===\n";
-
-    // Test 1: Basic arithmetic with various signs
-    cout << "1. Sign combinations:\n";
-    cout << "5 + 3 = " << (BigInt(5) + BigInt(3)) << endl;       // 8
-    cout << "-5 + 3 = " << (BigInt(-5) + BigInt(3)) << endl;     //-2
-    cout << "5 + (-3) = " << (BigInt(5) + BigInt(-3)) << endl;   // 2
-    cout << "-5 + (-3) = " << (BigInt(-5) + BigInt(-3)) << endl; //-8
-
-    // Test 2: Subtraction edge cases
-    cout << "\n2. Subtraction edge cases:\n";
-    cout << "5 - 8 = " << (BigInt(5) - BigInt(8)) << endl; //-3
-    cout << "0 - 5 = " << (BigInt(0) - BigInt(5)) << endl; //-5
-    cout << "5 - 0 = " << (BigInt(5) - BigInt(0)) << endl; // 5
-    cout << "0 - 0 = " << (BigInt(0) - BigInt(0)) << endl; // 0
-
-    // Test 3: Multiplication edge cases
-    cout << "\n3. Multiplication edge cases:\n";
-    cout << "0 * 12345 = " << (BigInt(0) * BigInt(12345)) << endl;   // 0
-    cout << "12345 * 0 = " << (BigInt(12345) * BigInt(0)) << endl;   // 0
-    cout << "1 * 999999 = " << (BigInt(1) * BigInt(999999)) << endl; // 999999
-    cout << "999999 * 1 = " << (BigInt(999999) * BigInt(1)) << endl; // 999999
-
-    // Test 4: Division edge cases
-    cout << "\n4. Division edge cases:\n";
-    cout << "0 / 5 = " << (BigInt(0) / BigInt(5)) << endl; // 0
-    cout << "5 / 1 = " << (BigInt(5) / BigInt(1)) << endl; // 5
-    cout << "1 / 2 = " << (BigInt(1) / BigInt(2)) << endl; // 0
-
-    // Test 5: Modulus edge cases
-    cout << "\n5. Modulus edge cases:\n";
-    cout << "5 % 3 = " << (BigInt(5) % BigInt(3)) << endl; // 2
-    cout << "3 % 5 = " << (BigInt(3) % BigInt(5)) << endl; // 3
-    cout << "0 % 5 = " << (BigInt(0) % BigInt(5)) << endl; // 0
-
-    // Test 6: Large number operations
-    cout << "\n6. Large number precision:\n";
-    BigInt huge1("123456789012345678901234567890");
-    BigInt huge2("987654321098765432109876543210");
-    cout << "Huge1 + Huge2 = " << (huge1 + huge2) << endl; // 1111111110111111111011111111100
-    cout << "Huge1 * 2 = " << (huge1 * BigInt(2)) << endl; // 246913578024691357802469135780
-
-    // Test 7: Comparison operators
-    cout << "\n7. Comparison operators:\n";
-    cout << "5 == 5: " << (BigInt(5) == BigInt(5)) << endl;  // true
-    cout << "5 != 3: " << (BigInt(5) != BigInt(3)) << endl;  // true
-    cout << "-5 < 3: " << (BigInt(-5) < BigInt(3)) << endl;  // true
-    cout << "3 > -5: " << (BigInt(3) > BigInt(-5)) << endl;  // true
-    cout << "0 == -0: " << (BigInt(0) == BigInt(0)) << endl; // true
-
-    // Test 8: Increment/Decrement
-    cout << "\n8. Increment/Decrement:\n";
-    BigInt x(5);
-    cout << "x = " << x << ", x++ = " << x++ << ", after: " << x << endl; // x = 5, x++ = 5, after: 6
-    x = BigInt(5);
-    cout << "x = " << x << ", ++x = " << ++x << ", after: " << x << endl; // x = 5, ++x = 6, after: 6
-
-    // Test 9: String constructor validation
-    cout << "\n9. String validation:\n";
     try
     {
-        BigInt invalid("abc123");
-        cout << "ERROR: Should have thrown exception" << endl;
+        BigInt result = BigInt(1) % BigInt(0);
+        cout << "ERROR: Modulus by zero should have thrown exception" << endl;
     }
-    catch (const invalid_argument &e)
+    catch (const runtime_error &e)
     {
-        cout << "Invalid string correctly caught: " << e.what() << endl;
+        cout << "Modulus by zero correctly caught: " << e.what() << endl;
     }
 
-    // Test 10: Very large division
-    cout << "\n10. Large division:\n";
-    BigInt dividend("1000000000000000000000000");
-    BigInt divisor("1000000000000");
-    cout << "Very large division: " << (dividend / divisor) << endl;
+    cout << "\nVery large numbers:" << endl;
+    BigInt huge1("999999999999999999999999999");
+    BigInt huge2("1");
+    cout << "999999999999999999999999999 + 1 = " << (huge1 + huge2) << endl;
+    cout << "999999999999999999999999999 * 2 = " << (huge1 * BigInt(2)) << endl;
+}
 
-    cout << "\n=== Critical Edge Case Tests ===\n";
+void runStringValidationTests()
+{
+    cout << "\n=== STRING VALIDATION TESTS ===" << endl;
 
-    // Test negative division and modulus (C++ behavior)
-    cout << "1. Negative division and modulus:\n";
-    cout << "-10 / 3 = " << (BigInt(-10) / BigInt(3)) << " (expected: -3)\n";
-    cout << "-10 % 3 = " << (BigInt(-10) % BigInt(3)) << " (expected: -1)\n";
-
-    // Test very large numbers with different signs
-    cout << "\n2. Very large numbers with different signs:\n";
-    BigInt huge_pos("999999999999999999999");
-    BigInt huge_neg("-1000000000000000000000");
-    cout << "999999999999999999999 + (-1000000000000000000000) = "
-         << (huge_pos + huge_neg) << " (expected: -1)\n";
-
-    // Test multiplication with different signs
-    cout << "\n3. Multiplication with different signs:\n";
-    BigInt num3("123456789");
-    BigInt num4("-987654321");
-    cout << "123456789 * (-987654321) = " << (num3 * num4)
-         << " (expected: -121932631112635269)\n";
-
-    // Test division by 1 and -1
-    cout << "\n4. Division by 1 and -1:\n";
-    BigInt very_large("12345678901234567890");
-    cout << "12345678901234567890 / 1 = " << (very_large / BigInt(1))
-         << " (expected: 12345678901234567890)\n";
-    cout << "12345678901234567890 / (-1) = " << (very_large / BigInt(-1))
-         << " (expected: -12345678901234567890)\n";
-
-    // Test modulus with negative divisor
-    cout << "\n5. Modulus with negative divisor:\n";
-    cout << "10 % (-3) = " << (BigInt(10) % BigInt(-3)) << " (expected: 1)\n";
-    cout << "-10 % 3 = " << (BigInt(-10) % BigInt(3)) << " (expected: -1)\n";
-    cout << "-10 % (-3) = " << (BigInt(-10) % BigInt(-3)) << " (expected: -1)\n";
-    cout << "10 % 3 = " << (BigInt(10) % BigInt(3)) << " (expected: 1)\n";
-
-    // Test edge case: INT64_MIN
-    cout << "\n6. INT64_MIN edge cases:\n";
-    BigInt min_int64(INT64_MIN);
-    cout << "INT64_MIN = " << min_int64 << " (expected: -9223372036854775808)\n";
-    cout << "INT64_MIN + 1 = " << (min_int64 + BigInt(1))
-         << " (expected: -9223372036854775807)\n";
-    cout << "INT64_MIN - 1 = " << (min_int64 - BigInt(1))
-         << " (expected: -9223372036854775809)\n";
-
-    // Test division and modulus with INT64_MIN
-    cout << "\n7. INT64_MIN division and modulus:\n";
-    cout << "INT64_MIN / (-1) = " << (min_int64 / BigInt(-1))
-         << " (expected: 9223372036854775808 - but this may overflow 64-bit)\n";
-    cout << "INT64_MIN % 2 = " << (min_int64 % BigInt(2)) << " (expected: 0)\n";
-
-    // Test operations with zero
-    cout << "\n8. Operations with zero:\n";
-    cout << "0 / (-5) = " << (BigInt(0) / BigInt(-5)) << " (expected: 0)\n";
-    cout << "0 % (-5) = " << (BigInt(0) % BigInt(-5)) << " (expected: 0)\n";
-    cout << "(-5) / 1 = " << (BigInt(-5) / BigInt(1)) << " (expected: -5)\n";
-    cout << "(-5) % 1 = " << (BigInt(-5) % BigInt(1)) << " (expected: 0)\n";
-
-    // Test very small numbers
-    cout << "\n9. Very small number operations:\n";
-    cout << "1 / 100000000000000000000 = " << (BigInt(1) / BigInt("100000000000000000000"))
-         << " (expected: 0)\n";
-    cout << "1 % 100000000000000000000 = " << (BigInt(1) % BigInt("100000000000000000000"))
-         << " (expected: 1)\n";
-
-    cout << "\n=== String Validation Tests ===\n";
-
-    // Test valid strings
+    cout << "Valid strings:" << endl;
     try
     {
         BigInt valid1("123");
         cout << "Valid string '123': " << valid1 << endl;
-    }
-    catch (const exception &e)
-    {
-        cout << "ERROR: Valid string failed: " << e.what() << endl;
-    }
 
-    try
-    {
         BigInt valid2("-456");
         cout << "Valid string '-456': " << valid2 << endl;
-    }
-    catch (const exception &e)
-    {
-        cout << " ERROR: Valid string failed: " << e.what() << endl;
-    }
 
-    try
-    {
         BigInt valid3("+789");
         cout << "Valid string '+789': " << valid3 << endl;
-    }
-    catch (const exception &e)
-    {
-        cout << "ERROR: Valid string failed: " << e.what() << endl;
-    }
 
-    try
-    {
         BigInt valid4("0000123");
         cout << "Valid string '0000123': " << valid4 << " (leading zeros removed)" << endl;
+
+        BigInt valid5("-0");
+        cout << "Valid string '-0': " << valid5 << " (should be 0, not negative)" << endl;
     }
     catch (const exception &e)
     {
         cout << "ERROR: Valid string failed: " << e.what() << endl;
     }
 
-    // Test invalid strings - should throw exceptions
+    cout << "\nInvalid strings (should throw exceptions):" << endl;
     vector<string> invalid_strings = {
-        "abc123",
-        "12a34",
-        "12.34",
-        "12-34",
-        "12+34",
-        " 123 ",
-        "",
-        "-",
-        "+",
-        "++123",
-        "--456",
-        "-+789",
-        "+-123",
-        "123abc",
-        "0x123",
-        "1e10"};
+        "abc123", "12a34", "12.34", "12-34", "12+34",
+        " 123 ", "", "-", "+", "++123", "--456",
+        "-+789", "+-123", "123abc", "0x123", "1e10"};
 
     for (const string &invalid_str : invalid_strings)
     {
         try
         {
             BigInt invalid(invalid_str);
-            cout << " ERROR: Invalid string '" << invalid_str << "' should have thrown exception, but got: " << invalid << endl;
+            cout << "ERROR: Invalid string '" << invalid_str << "' should have thrown exception, but got: " << invalid << endl;
         }
         catch (const invalid_argument &e)
         {
-            cout << " Invalid string '" << invalid_str << "' correctly caught: " << e.what() << endl;
+            cout << "Invalid string '" << invalid_str << "' correctly caught" << endl;
         }
         catch (const exception &e)
         {
             cout << "ERROR: Unexpected exception for '" << invalid_str << "': " << e.what() << endl;
         }
     }
+}
 
-    // Test edge case: string with only zeros
+void runAllTests()
+{
+    cout << "\n=== RUNNING ALL COMPREHENSIVE TESTS ===" << endl;
+
+    runBasicTests();
+    runArithmeticTests();
+    runComparisonTests();
+    runUnaryAndIncrementTests();
+    runNegativeNumberTests();
+    runEdgeCaseTests();
+    runStringValidationTests();
+
+    cout << "\n All tests completed!" << endl;
+    cout << "\nPress Enter to return to main menu...";
+    cin.ignore();
+    cin.get();
+}
+
+void performArithmeticOperation()
+{
+    cout << "\n=== ARITHMETIC OPERATIONS CALCULATOR ===" << endl;
+    cout << "Enter two BigInt numbers to perform all arithmetic operations:" << endl;
+
+    string num1_str, num2_str;
+
+    cout << "Enter first number: ";
+    cin >> num1_str;
+    cout << "Enter second number: ";
+    cin >> num2_str;
+
     try
     {
-        BigInt zeros("00000");
-        cout << " String '00000' becomes: " << zeros << " (should be 0)" << endl;
+        BigInt num1(num1_str);
+        BigInt num2(num2_str);
+
+        cout << "\n=== ARITHMETIC OPERATIONS RESULTS ===" << endl;
+        cout << "Numbers: " << num1 << " and " << num2 << endl
+             << endl;
+
+        cout << "ADDITION:" << endl;
+        cout << num1 << " + " << num2 << " = " << (num1 + num2) << endl;
+
+        cout << "\nSUBTRACTION:" << endl;
+        cout << num1 << " - " << num2 << " = " << (num1 - num2) << endl;
+        cout << num2 << " - " << num1 << " = " << (num2 - num1) << endl;
+
+        cout << "\nMULTIPLICATION:" << endl;
+        cout << num1 << " * " << num2 << " = " << (num1 * num2) << endl;
+
+        cout << "\nDIVISION:" << endl;
+        if (num2 != BigInt(0))
+        {
+            cout << num1 << " / " << num2 << " = " << (num1 / num2) << endl;
+        }
+        else
+        {
+            cout << num1 << " / " << num2 << " = Cannot divide by zero" << endl;
+        }
+
+        if (num1 != BigInt(0))
+        {
+            cout << num2 << " / " << num1 << " = " << (num2 / num1) << endl;
+        }
+        else
+        {
+            cout << num2 << " / " << num1 << " = Cannot divide by zero" << endl;
+        }
+
+        cout << "\nMODULUS:" << endl;
+        if (num2 != BigInt(0))
+        {
+            cout << num1 << " % " << num2 << " = " << (num1 % num2) << endl;
+        }
+        else
+        {
+            cout << num1 << " % " << num2 << " = Cannot modulus by zero" << endl;
+        }
+
+        if (num1 != BigInt(0))
+        {
+            cout << num2 << " % " << num1 << " = " << (num2 % num1) << endl;
+        }
+        else
+        {
+            cout << num2 << " % " << num1 << " = Cannot modulus by zero" << endl;
+        }
+
+        cout << "\nCOMPOUND OPERATIONS:" << endl;
+        cout << "(" << num1 << " + " << num2 << ") * 2 = " << ((num1 + num2) * BigInt(2)) << endl;
+        cout << "(" << num1 << " * " << num2 << ") + 10 = " << ((num1 * num2) + BigInt(10)) << endl;
+    }
+    catch (const runtime_error &e)
+    {
+        cout << "Math Error: " << e.what() << endl;
+    }
+    catch (const invalid_argument &e)
+    {
+        cout << "Input Error: " << e.what() << endl;
     }
     catch (const exception &e)
     {
-        cout << "ERROR: Zeros string failed: " << e.what() << endl;
+        cout << "Error: " << e.what() << endl;
     }
 
-    // Test edge case: negative zero
+    cout << "\nPress Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+}
+
+void performComparisonOperation()
+{
+    cout << "\n=== COMPARISON OPERATIONS CALCULATOR ===" << endl;
+    cout << "Enter two BigInt numbers to compare:" << endl;
+
+    string num1_str, num2_str;
+    cout << "Enter first number: ";
+    cin >> num1_str;
+    cout << "Enter second number: ";
+    cin >> num2_str;
+
     try
     {
-        BigInt neg_zero("-0");
-        cout << " String '-0' becomes: " << neg_zero << " (should be 0, not negative)" << endl;
+        BigInt num1(num1_str);
+        BigInt num2(num2_str);
+
+        cout << "\nComparison results:" << endl;
+        cout << num1 << " == " << num2 << " : " << (num1 == num2) << endl;
+        cout << num1 << " != " << num2 << " : " << (num1 != num2) << endl;
+        cout << num1 << " < " << num2 << " : " << (num1 < num2) << endl;
+        cout << num1 << " > " << num2 << " : " << (num1 > num2) << endl;
+        cout << num1 << " <= " << num2 << " : " << (num1 <= num2) << endl;
+        cout << num1 << " >= " << num2 << " : " << (num1 >= num2) << endl;
     }
     catch (const exception &e)
     {
-        cout << "ERROR: Negative zero failed: " << e.what() << endl;
+        cout << "Error: " << e.what() << endl;
     }
- // test additional casses with negative nubers
-    cout << "1.Addition with negative numbers : " << endl;
-    cout << :"-5 + -10 =" << (BigInt(-5) + BigInt(-10)) <<"expected: -15"<< endl;
-    // test additional cases with negative numbers
-    cout << "----------------------\n";
-    cout << "1. Addition with negative numbers :" << endl;
-    cout << "-5 + -10 = " << (BigInt(-5) + BigInt(-10)) << " expected: -15" << endl;
-    cout << "-5 + 10 = " << (BigInt(-5) + BigInt(10)) << " expected: 5" << endl;
-    cout << "5 + -10 = " << (BigInt(5) + BigInt(-10)) << " expected: -5" << endl;
-    //test subtraction with negative
-    cout << "----------------------\n";
-    cout << "2.subtraction with negative :" << endl;
-    cout << "5 - (-10) = " << (BigInt(5) - BigInt(-10)) << " expected: 15" << endl;
-    cout << "-5 - (-10) = " << (BigInt(-5) - BigInt(-10)) << " expected: 5" << endl;
-    cout << "-5 - 10 = " << (BigInt(-5) - BigInt(10)) << " expected: -15" << endl;
-    cout << "5 - 10 = " << (BigInt(5) - BigInt(10)) << " expected: -5" << endl;
-    //test multiplication with negative
-    cout << "----------------------\n";
-    cout << "3.multiplication with negative" << endl;
-    cout << "-5 * 10 = " << (BigInt(-5) * BigInt(10)) << " expected: -50" << endl;
-    cout << "-5 * -10 = " << (BigInt(-5) * BigInt(-10)) << " expected: 50" << endl;
-    cout << "5 * -10 = " << (BigInt(5) * BigInt(-10)) << " expected: -50" << endl;
-    //test division with negative
-    cout << "----------------------\n";
-    cout << "4.division with negative :" << endl;
-    cout << "-10/2 = " << (BigInt(-10) / BigInt(2)) << " expected: -5" << endl;
-    cout << "-10/-2 = " << (BigInt(-10) / BigInt(-2)) << " expected: 5" << endl;
-    cout << "10/-2 = " << (BigInt(10) / BigInt(-2)) << " expected: -5" << endl;
-    //Modulus with negative
-    cout << "----------------------\n";
-    cout << " 5. Modulus with negative :" << endl;
-    cout << "10 % (-3) = " << (BigInt(10) % BigInt(-3)) << " expected: 1" << endl;
-    cout << "(-10) % (-3) = " << (BigInt(-10) % BigInt(-3)) << " expected: -1" << endl;
-    cout << "(-10) % 3 = " << (BigInt(-10) % BigInt(3)) << " expected: -1" << endl;
-    // INT64MIN edge cases with negative
-    cout << "----------------------\n";
-    cout << "6. INT64MIN edge cases:\n";
-    BigInt minint64(INT64_MIN);
-    cout << "INT64MIN = " << min_int64 << " (expected: -9223372036854775808)\n";
-    cout << "INT64MIN + 1 = " << (min_int64 + BigInt(1))
-        << " (expected: -9223372036854775807)\n";
-    cout << "INT64MIN - 1 = " << (min_int64 - BigInt(1))
-        << " (expected: -9223372036854775809)\n";
 
-    // Test edge case: Division by zero
-    try
-    {
-        BigInt a("123456789");
-        BigInt b("0");
-        BigInt c = a / b;
-        cout << "Result: " << c << endl;
-    }
-    catch (const std::runtime_error &e)
-    {
-        cout << "Caught exception: " << e.what() << endl;
-    }
+    cout << "\nPress Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void performUnaryOperation()
+{
+    cout << "\n=== UNARY OPERATIONS CALCULATOR ===" << endl;
+    cout << "Enter a BigInt number:" << endl;
+
+    string num_str;
+    cout << "Enter number: ";
+    cin >> num_str;
 
     try
     {
-        BigInt x("-987654321");
-        BigInt y("0");
-        BigInt z = x % y;
-        cout << "Result: " << z << endl;
+        BigInt num(num_str);
+        BigInt original = num;
+
+        cout << "\nUnary operations on " << original << ":" << endl;
+        cout << "Unary plus (+num): " << (+num) << endl;
+        cout << "Unary minus (-num): " << (-num) << endl;
+
+        cout << "\nIncrement/Decrement operations:" << endl;
+        num = original; // Reset
+        cout << "Pre-increment (++num): " << (++num) << " (num is now " << num << ")" << endl;
+
+        num = original; // Reset
+        cout << "Post-increment (num++): " << (num++) << " (num is now " << num << ")" << endl;
+
+        num = original; // Reset
+        cout << "Pre-decrement (--num): " << (--num) << " (num is now " << num << ")" << endl;
+
+        num = original; // Reset
+        cout << "Post-decrement (num--): " << (num--) << " (num is now " << num << ")" << endl;
     }
-    catch (const std::runtime_error &e)
+    catch (const exception &e)
     {
-        cout << "Caught exception: " << e.what() << endl;
+        cout << "Error: " << e.what() << endl;
     }
 
+    cout << "\nPress Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void performAssignmentOperation()
+{
+    cout << "\n=== ASSIGNMENT OPERATIONS CALCULATOR ===" << endl;
+    cout << "Enter two BigInt numbers and test assignment operations:" << endl;
+
+    string num1_str, num2_str;
+    cout << "Enter first number: ";
+    cin >> num1_str;
+    cout << "Enter second number: ";
+    cin >> num2_str;
+
+    try
+    {
+        BigInt num1(num1_str);
+        BigInt num2(num2_str);
+        BigInt original1 = num1;
+
+        cout << "\nAssignment operations with " << original1 << " and " << num2 << ":" << endl;
+
+        num1 = original1;
+        num1 += num2;
+        cout << original1 << " += " << num2 << " = " << num1 << endl;
+
+        num1 = original1;
+        num1 -= num2;
+        cout << original1 << " -= " << num2 << " = " << num1 << endl;
+
+        num1 = original1;
+        num1 *= num2;
+        cout << original1 << " *= " << num2 << " = " << num1 << endl;
+
+        if (num2 != BigInt(0))
+        {
+            num1 = original1;
+            num1 /= num2;
+            cout << original1 << " /= " << num2 << " = " << num1 << endl;
+
+            num1 = original1;
+            num1 %= num2;
+            cout << original1 << " %= " << num2 << " = " << num1 << endl;
+        }
+        else
+        {
+            cout << "Skipping division and modulus operations (division by zero)" << endl;
+        }
+    }
+    catch (const exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    cout << "\nPress Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void displayMenu()
+{
+    cout << "\n========================================" << endl;
+    cout << "    WELCOME TO BIGINT CLASS TESTER" << endl;
+    cout << "========================================" << endl;
+    cout << "Choose the operation you want to perform:" << endl;
+    cout << "1. Run All Test Cases" << endl;
+    cout << "2. Basic Constructor & Output Tests" << endl;
+    cout << "3. Arithmetic Operations Tests" << endl;
+    cout << "4. Comparison Operators Tests" << endl;
+    cout << "5. Unary & Increment/Decrement Tests" << endl;
+    cout << "6. Negative Number Operations Tests" << endl;
+    cout << "7. Edge Case Tests" << endl;
+    cout << "8. String Validation Tests" << endl;
+    cout << "9. Interactive Arithmetic Calculator" << endl;
+    cout << "10. Interactive Comparison Calculator" << endl;
+    cout << "11. Interactive Unary Operations" << endl;
+    cout << "12. Interactive Assignment Operations" << endl;
+    cout << "13. Exit" << endl;
+    cout << "========================================" << endl;
+    cout << "Enter your choice (1-13): ";
+}
+
+int main()
+{
+    int choice;
+
+    cout << "BigInt Class - Menu-Driven Testing Interface" << endl;
+    cout << "This program allows you to test all BigInt operations interactively." << endl;
+
+    do
+    {
+        displayMenu();
+
+        if (!(cin >> choice))
+        {
+            cout << "\nInvalid input! Please enter a number between 1-13." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        switch (choice)
+        {
+        case 1:
+            runAllTests();
+            break;
+        case 2:
+            runBasicTests();
+            break;
+        case 3:
+            runArithmeticTests();
+            break;
+        case 4:
+            runComparisonTests();
+            break;
+        case 5:
+            runUnaryAndIncrementTests();
+            break;
+        case 6:
+            runNegativeNumberTests();
+            break;
+        case 7:
+            runEdgeCaseTests();
+            break;
+        case 8:
+            runStringValidationTests();
+            break;
+        case 9:
+            performArithmeticOperation();
+            break;
+        case 10:
+            performComparisonOperation();
+            break;
+        case 11:
+            performUnaryOperation();
+            break;
+        case 12:
+            performAssignmentOperation();
+            break;
+        case 13:
+            cout << "\nThank you for using BigInt Class Tester!" << endl;
+            cout << "Goodbye!" << endl;
+            break;
+        default:
+            cout << "\nInvalid choice! Please enter a number between 1-13." << endl;
+            break;
+        }
+
+        if (choice != 13)
+        {
+            cout << "\nPress Enter to return to main menu...";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+    } while (choice != 13);
     return 0;
 }
